@@ -9,50 +9,88 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @State var show = false
+    @State var lineWidth: CGFloat = 0
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+        ZStack{
+           // Circle().frame(width: 250, height: 250).opacity(0.1)
+            VStack{
+                HStack{
+                    Image(.user1)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 60, height: 60)
+                        .overlay {
+                            Circle().stroke(lineWidth: lineWidth)
+                        }
+                        .offset(x: show ? 115 : 300 , y: show ? -10 : -100)
+                    
+                    Image(.user2)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 60, height: 60)
+                        .overlay {
+                            Circle().stroke(lineWidth: lineWidth)
+                        }
+                        .offset(x: show ? -115 : -300 , y: show ? -10 : -100)
                 }
-                .onDelete(perform: deleteItems)
+                HStack{
+                    Image(.user3)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 60, height: 60)
+                        .overlay {
+                            Circle().stroke(lineWidth: lineWidth)
+                        }
+                        .offset(x: show ? 115 : 300 , y: show ? 10 : 100)
+                    
+                    Image(.user4)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 60, height: 60)
+                        .overlay {
+                            Circle().stroke(lineWidth: lineWidth)
+                        }
+                        .offset(x: show ? -115 : -300 , y: show ? 10 : 100)
+                }
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+            VStack{
+                Image(.user5)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 60, height: 60)
+                    .overlay {
+                        Circle().stroke(lineWidth: lineWidth)
                     }
-                }
+                    .offset(y: show ? -60 : -300)
+                
+                Image(.user6)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 60, height: 60)
+                    .overlay {
+                        Circle().stroke(lineWidth: lineWidth)
+                    }
+                    .offset(y: show ? 60 : 300)
             }
-        } detail: {
-            Text("Select an item")
+            Image(.user7)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 60, height: 60)
+                .overlay {
+                    Circle().stroke(lineWidth: lineWidth)
+                }
+        }
+        .rotationEffect(.degrees(show ? 0 : 100))
+        .onAppear{
+            withAnimation(.spring(response: 0.8, dampingFraction: 0.6)) {
+                show.toggle()
+            }
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
-    }
+    
 }
 
 #Preview {
